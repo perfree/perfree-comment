@@ -123,6 +123,7 @@ export default {
 .dib-box{
   width: 100%;
   overflow: hidden;
+	padding: 0;
 }
 .perfree-emjoi-page{
   text-align: center;

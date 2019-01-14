@@ -11,8 +11,6 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "iview": "^3.2.1",
-    "iview-loader": "^1.2.2",
     "jquery": "^3.3.1",
     "vue": "^2.5.11"
   },

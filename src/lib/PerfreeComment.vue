@@ -1,20 +1,24 @@
 <!-- 评论框插件 -->
 <template>
-  <Card style="padding: 14px;">
+  <div style="padding: 14px;">
     <div class="perfree-eidtor-input-box">
       <div contenteditable="true" v-bind:style="{minHeight: minHeight}" spellcheck="false" @input="setFontNumber" v-on:keyup.enter="watchEnter" id="perfreeEdit"></div>
       <div class="perfree-eidtor-tools-box">
-        <!-- 表情面板start -->
-        <Poptip placement="bottom-start">
-          <a href="javascript:;" class="perfree-editor-emjoi"><Icon type="ios-happy-outline" size="20"/>表情</a>
-          <div class="api" slot="content">
-            <emjoi-icon v-on:selectEmjoi="addEmjoi"></emjoi-icon>
-          </div>
-        </Poptip>
-        <!-- 表情面板end -->
-        <a href="javascript:;" class="perfree-editor-image" @click="uploadImg"><Icon type="ios-image-outline" size="18"/>图片</a>
+				<a href="javascript:;" class="perfree-editor-emjoi">
+					<img src="../assets/emjoi.svg" width="25px" height="25px">
+					<span>表情</span>
+				</a>
+        <a href="javascript:;" class="perfree-editor-image" @click="uploadImg">
+					<img src="../assets/image.svg" width="25px" height="25px">
+					<span>图片</span>
+				</a>
         <input type="file" style="display: none" id="uploadFile" @change="showImg">
         <Button type="info" class="perfree-eidtor-submit-btn" @click="submitval">{{btnMessage}}</Button>
+				<!-- 表情面板start -->
+				<div class="emjoi-panel-box">
+					<emjoi-icon v-on:selectEmjoi="addEmjoi"></emjoi-icon>
+				</div>
+				<!-- 表情面板end -->
         <!-- image面板 -->
         <div class="upload-image-box" v-if="imageList.length > 0">
          <div class="image-show-box" v-for="(image,index) in imageList" :key="index">
@@ -28,7 +32,7 @@
         <span class="font-number-show" v-bind:style="{ color: fontNumberColor}">{{fontNumber}}</span>
       </div>
     </div>
-  </Card>
+  </div>
 </template>
 
 <script>
@@ -185,15 +189,9 @@ export default {
 </script>
 
 <style>
-  .icon {
-    width: 1em;
-    height: 1em;
-    vertical-align: -0.15em;
-    fill: currentColor;
-    overflow: hidden;
-  }
 .perfree-eidtor-input-box{
   width: 100%;
+	position: relative;
 }
 #perfreeEdit{
   width: 100%;
@@ -208,8 +206,23 @@ export default {
 }
 .font-number-show{
   position: absolute;
-  bottom: 62px;
-	right: 36px;
+	bottom: 32px;
+	right: 5px;
+}
+.emjoi-panel-box{
+	width: 276px;
+	z-index: 101;
+	position: absolute;
+	background-color: #fff;
+	background-clip: padding-box;
+	border-radius: 4px;
+	box-shadow: 0 1px 6px rgba(0,0,0,.2);
+	white-space: nowrap;
+}
+.perfree-editor-emjoi,.perfree-editor-image{
+	text-decoration: none;
+	color: #2db7f5;
+	display: block;
 }
 .perfree-editor-image{
   margin-left: 6px;
@@ -219,18 +232,13 @@ export default {
   width: 88px;
   height: 30px;
   border-radius: 0px;
+	border: none;
+	background-color: #2db7f5;
+	color: white;
+	cursor: pointer;
 }
 .perfree-eidtor-submit-btn:hover{
   box-shadow: none;
-}
-.ivu-poptip-title{
-  display: none;
-}
-.ivu-poptip-body-content{
-  width: 200px;
-}
-.ivu-poptip-body{
-  padding: 4px 12px 12px 4px;
 }
 .upload-image-box{
   width: 324px;
