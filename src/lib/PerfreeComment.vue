@@ -4,33 +4,36 @@
     <div class="perfree-eidtor-input-box">
       <div contenteditable="true" v-bind:style="{minHeight: minHeight}" spellcheck="false" @input="setFontNumber" v-on:keyup.enter="watchEnter" id="perfreeEdit"></div>
       <div class="perfree-eidtor-tools-box">
-				<a href="javascript:;" class="perfree-editor-emjoi">
-					<img src="../assets/emjoi.svg" width="25px" height="25px">
-					<span>表情</span>
-				</a>
-        <a href="javascript:;" class="perfree-editor-image" @click="uploadImg">
-					<img src="../assets/image.svg" width="25px" height="25px">
-					<span>图片</span>
-				</a>
+				<div style="height: 30px;float: left;line-height: 30px;">
+					<a href="javascript:;" class="perfree-editor-emjoi" @click="showEmjoi" id="emjoi-open-btn">
+						<img src="../assets/emjoi.svg" width="25px" height="25px" style="float: left;">
+						<span style="line-height: 30px;display: block;float: left;">表情</span>
+					</a>
+					<a href="javascript:;" class="perfree-editor-image" @click="uploadImg">
+						<img src="../assets/image.svg" width="25px" height="25px" style="float: left;">
+						<span style="line-height: 30px;display: block;float: left;">图片</span>
+					</a>
+				</div>
         <input type="file" style="display: none" id="uploadFile" @change="showImg">
         <Button type="info" class="perfree-eidtor-submit-btn" @click="submitval">{{btnMessage}}</Button>
-				<!-- 表情面板start -->
-				<div class="emjoi-panel-box">
-					<emjoi-icon v-on:selectEmjoi="addEmjoi"></emjoi-icon>
-				</div>
-				<!-- 表情面板end -->
-        <!-- image面板 -->
-        <div class="upload-image-box" v-if="imageList.length > 0">
-         <div class="image-show-box" v-for="(image,index) in imageList" :key="index">
-           <img :src="image" width="100px" height="100px" @mouseover="showdelete">
-           <a href="javascript:;" class="delete-img" @mouseout="hideDelete" @click="deleteImg(index)"><Icon type="ios-trash" size="26"/></a>
-         </div>
-          <a href="javascript:;" @click="uploadImg" class="upload-image-upload" id="uploadImgBtn">
-            +
-          </a>
-        </div>
         <span class="font-number-show" v-bind:style="{ color: fontNumberColor}">{{fontNumber}}</span>
       </div>
+			<!-- 表情面板start -->
+			<div class="emjoi-panel-box" v-show="emjoiShow">
+				<emjoi-icon v-on:selectEmjoi="addEmjoi"></emjoi-icon>
+			</div>
+			<div class="emjoi-box-mask" v-show="emjoiShow" @click="hideEmjoi"></div>
+			<!-- 表情面板end -->
+			<!-- image面板 -->
+			<div class="upload-image-box" v-if="imageList.length > 0">
+			<div class="image-show-box" v-for="(image,index) in imageList" :key="index">
+				<img :src="image" width="100px" height="100px" @mouseover="showdelete">
+				<a href="javascript:;" class="delete-img" @mouseout="hideDelete" @click="deleteImg(index)">×</a>
+			</div>
+				<a href="javascript:;" @click="uploadImg" class="upload-image-upload" id="uploadImgBtn">
+					+
+				</a>
+			</div>
     </div>
   </div>
 </template>
@@ -50,7 +53,8 @@ export default {
       emjoiNumber: 0,
       activitiesVal: '',
       fontNumberColor: '#c5c8ce',
-      imageList: []
+      imageList: [],
+			emjoiShow: false
     }
   },
   methods: {
@@ -138,11 +142,11 @@ export default {
       let file = $event.target.files[0]
       // 判断是否是图片类型
       if (!/image\/\w+/.test(file.type)) {
-        this.$Message.error('图片格式不正确')
+				this.$emit('error', '图片格式不正确')
         return false
       }
       if (this.imageList.length >= 6) {
-        this.$Message.error('最多只能上传6张图片哦')
+				this.$emit('error', '最多只能上传6张图片哦')
         return false
       }
       let reader = new FileReader()
@@ -183,7 +187,15 @@ export default {
       this.imageList = []
       this.activitiesVal = ''
       $('#perfreeEdit').empty()
-    }
+    },
+		/* 显示表情面板 */
+		showEmjoi: function () {
+			this.emjoiShow = !this.emjoiShow
+		},
+		/* 隐藏表情面板 */
+		hideEmjoi: function (e) {
+			this.emjoiShow = false
+		}
   }
 }
 </script>
@@ -197,6 +209,7 @@ export default {
   width: 100%;
   resize: inherit;
   border: 1px solid #e8eaec;
+	text-align: -webkit-left;
 }
 .perfree-eidtor-tools-box{
   margin-top: 6px;
@@ -208,6 +221,15 @@ export default {
   position: absolute;
 	bottom: 32px;
 	right: 5px;
+}
+.emjoi-box-mask{
+		z-index: 88;
+    width: 100%;
+    background: rgba(0,0,0,0);
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 .emjoi-panel-box{
 	width: 276px;
@@ -223,6 +245,8 @@ export default {
 	text-decoration: none;
 	color: #2db7f5;
 	display: block;
+	float: left;
+	overflow: hidden;
 }
 .perfree-editor-image{
   margin-left: 6px;
@@ -284,5 +308,17 @@ export default {
   border: 2px dashed #e8eaec;
   margin-left: 4px;
   margin-top: 4px;
+}
+.upload-image-upload{
+	text-decoration: none;
+	color: #2DB7F5;
+	font-size: 20px;
+	font-weight: 600;
+}
+.delete-img{
+	text-decoration: none;
+	color: red;
+	font-size: 20px;
+	font-weight: 600;
 }
 </style>
