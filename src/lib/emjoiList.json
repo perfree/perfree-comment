@@ -1,0 +1,9 @@
+[
+	{
+		"emjoiName":"大脸萌",
+		"emjoiList":[
+			{"url": "../assets/emjoi/dalianmeng/guangbo.svg", "title": "广播"},
+			{"url": "./static/img/guangbo.svg", "title": "广播"}
+		]
+	}
+]

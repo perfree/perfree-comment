@@ -2,7 +2,8 @@
 <template>
   <div style="padding: 14px;">
     <div class="perfree-eidtor-input-box">
-      <div contenteditable="true" v-bind:style="{minHeight: minHeight}" spellcheck="false" @input="setFontNumber" v-on:keyup.enter="watchEnter" id="perfreeEdit"></div>
+      <div contenteditable="true" v-bind:style="{minHeight: minHeight}" spellcheck="false" @input="setFontNumber"
+			 v-on:keyup.enter="watchEnter" id="perfreeEdit"></div>
       <div class="perfree-eidtor-tools-box">
 				<div style="height: 30px;float: left;line-height: 30px;">
 					<a href="javascript:;" class="perfree-editor-emjoi" @click="showEmjoi" id="emjoi-open-btn">
@@ -16,24 +17,25 @@
 				</div>
         <input type="file" style="display: none" id="uploadFile" @change="showImg">
         <Button type="info" class="perfree-eidtor-submit-btn" @click="submitval">{{btnMessage}}</Button>
-        <span class="font-number-show" v-bind:style="{ color: fontNumberColor}">{{fontNumber}}</span>
+        <span class="font-number-show" v-bind:style="{ color: fontNumberColor}">{{fontNum}}</span>
       </div>
 			<!-- 表情面板start -->
 			<div class="emjoi-panel-box" v-show="emjoiShow">
-				<emjoi-icon v-on:selectEmjoi="addEmjoi"></emjoi-icon>
+				<emjoi-icon v-on:selectEmjoi="addEmjoi" :emjoiList="emjoiList"></emjoi-icon>
 			</div>
 			<div class="emjoi-box-mask" v-show="emjoiShow" @click="hideEmjoi"></div>
 			<!-- 表情面板end -->
-			<!-- image面板 -->
+			<!-- image面板start -->
 			<div class="upload-image-box" v-if="imageList.length > 0">
-			<div class="image-show-box" v-for="(image,index) in imageList" :key="index">
-				<img :src="image" width="100px" height="100px" @mouseover="showdelete">
-				<a href="javascript:;" class="delete-img" @mouseout="hideDelete" @click="deleteImg(index)">×</a>
-			</div>
+				<div class="image-show-box" v-for="(image,index) in imageList" :key="index">
+					<img :src="image" width="100px" height="100px" @mouseover="showdelete">
+					<a href="javascript:;" class="delete-img" @mouseout="hideDelete" @click="deleteImg(index)">×</a>
+				</div>
 				<a href="javascript:;" @click="uploadImg" class="upload-image-upload" id="uploadImgBtn">
 					+
 				</a>
 			</div>
+			<!-- image面板end -->
     </div>
   </div>
 </template>
@@ -46,15 +48,16 @@ export default {
   components: {
     EmjoiIcon
   },
-  props: ['minHeight', 'btnMessage'],
+  props: ['minHeight', 'btnMessage','emjoiList','fontTotalNumber','emjoiFontNumber'],
   data () {
     return {
-      fontNumber: 1000,
+      fontNum: 0,
       emjoiNumber: 0,
       activitiesVal: '',
       fontNumberColor: '#c5c8ce',
       imageList: [],
-			emjoiShow: false
+			emjoiShow: false,
+			emjoiFontNum: 2
     }
   },
   methods: {
@@ -63,9 +66,9 @@ export default {
       /* 获取文字内容赋值 */
       this.activitiesVal = $event.target.innerText
       /* 计算剩余字数 */
-      this.fontNumber = 1000 - this.activitiesVal.length - ($('#perfreeEdit > img').length) * 2
+      this.fontNum = this.fontTotalNumber - this.activitiesVal.length - ($('#perfreeEdit > img').length) * 2
       /* 给剩余字数选择颜色 */
-      if (this.fontNumber <= 0) {
+      if (this.fontNum <= 0) {
         this.fontNumberColor = 'red'
       } else {
         this.fontNumberColor = '#c5c8ce'
@@ -98,8 +101,8 @@ export default {
     addEmjoi: function (data) {
       $('#perfreeEdit').focus()
       this.insertHtmlAtCaret(data.outerHTML)
-      this.emjoiNumber += 2
-      this.fontNumber = 1000 - this.activitiesVal.length - this.emjoiNumber
+      this.emjoiNumber += parseInt(this.emjoiFontNum)
+      this.fontNum = this.fontTotalNumber - this.activitiesVal.length - this.emjoiNumber
     },
     /* 向编辑框插入html */
     insertHtmlAtCaret: function (html) {
@@ -187,6 +190,7 @@ export default {
       this.imageList = []
       this.activitiesVal = ''
       $('#perfreeEdit').empty()
+			this.fontNum = this.fontTotalNumber
     },
 		/* 显示表情面板 */
 		showEmjoi: function () {
@@ -196,7 +200,13 @@ export default {
 		hideEmjoi: function (e) {
 			this.emjoiShow = false
 		}
-  }
+  },
+	created:function () {
+		this.fontNum = this.fontTotalNumber
+		if (this.emjoiFontNumber !== undefined) {
+			this.emjoiFontNum = this.emjoiFontNumber
+		}
+	}
 }
 </script>
 
