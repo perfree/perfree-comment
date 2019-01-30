@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 表情包1 -->
-    <ul class="icon_lists dib-box" v-show="oneIsShow" v-for="(item,index) in emjoiLists" :key="index" v-if="index == activePage">
+    <ul class="icon_lists dib-box" v-for="(item,index) in emjoiLists" :key="index" v-if="index == activePage">
       <li class="dib" v-for="(emjoi, index) in item.emjoiList" :key="index">
         <img :src="emjoi.url" width="30px" height="30px" @click="selectEmjoi" :alt="emjoi.title" :title="emjoi.title">
       </li>
@@ -10,8 +10,8 @@
     <div class="perfree-emjoi-page">
 			<div style="margin: auto;width: fit-content;">
 				<div v-for="(item,index) in emjoiLists" :key="index" style="float: left;cursor: pointer;" @click="selectPage(index)">
-					<span style="background: #515a6e" class="perfree-emjoi-page-btn" v-if="activePage == index"></span>
-					<span style="background: #c5c8ce" class="perfree-emjoi-page-btn" v-if="activePage != index"></span>
+					<span style="background: #515a6e" class="perfree-emjoi-page-btn" v-if="activePage == index" :title="item.emjoiName"></span>
+					<span style="background: #c5c8ce" class="perfree-emjoi-page-btn" v-if="activePage != index" :title="item.emjoiName"></span>
 				</div>
 			</div>
     </div>
@@ -85,12 +85,6 @@ export default {
 					]
 				}
 			],
-      /* 表情面板分页第一页指示颜色 */
-      oneColor: '#515a6e',
-      /* 表情面板分页第二页指示颜色 */
-      twoColor: '#c5c8ce',
-      oneIsShow: true,
-      twoIsShow: false,
 			activePage: 0
     }
   },

@@ -15,7 +15,7 @@
 						<span style="line-height: 30px;display: block;float: left;">图片</span>
 					</a>
 				</div>
-        <input type="file" style="display: none" id="uploadFile" @change="showImg">
+        <input type="file" style="display: none" id="uploadFile" @change="showImg" accept="image/jpeg,image/png,image/gif">
         <Button type="info" class="perfree-eidtor-submit-btn" @click="submitval">{{btnMessage}}</Button>
         <span class="font-number-show" v-bind:style="{ color: fontNumberColor}">{{fontNum}}</span>
       </div>
@@ -48,7 +48,7 @@ export default {
   components: {
     EmjoiIcon
   },
-  props: ['minHeight', 'btnMessage','emjoiList','fontTotalNumber','emjoiFontNumber'],
+  props: ['minHeight', 'btnMessage','emjoiList','fontTotalNumber','emjoiFontNumber','maxImageTotal'],
   data () {
     return {
       fontNum: 0,
@@ -57,7 +57,8 @@ export default {
       fontNumberColor: '#c5c8ce',
       imageList: [],
 			emjoiShow: false,
-			emjoiFontNum: 2
+			emjoiFontNum: 2,
+			maxImage: 6
     }
   },
   methods: {
@@ -145,11 +146,11 @@ export default {
       let file = $event.target.files[0]
       // 判断是否是图片类型
       if (!/image\/\w+/.test(file.type)) {
-				this.$emit('error', '图片格式不正确')
+				this.$emit('error', 'imageType')
         return false
       }
-      if (this.imageList.length >= 6) {
-				this.$emit('error', '最多只能上传6张图片哦')
+      if (this.imageList.length >= this.maxImage) {
+				this.$emit('error', 'overtop imageTotal')
         return false
       }
       let reader = new FileReader()
@@ -205,6 +206,9 @@ export default {
 		this.fontNum = this.fontTotalNumber
 		if (this.emjoiFontNumber !== undefined) {
 			this.emjoiFontNum = this.emjoiFontNumber
+		}
+		if (this.maxImageTotal !== undefined) {
+			this.maxImage = this.maxImageTotal
 		}
 	}
 }
